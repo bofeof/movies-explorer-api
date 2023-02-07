@@ -33,8 +33,8 @@ const movieSchema = new mongoose.Schema({
     validator: {
       validation(url) {
         return (
-          validator.isUrl(url, { require_protocol: true }) &&
-          /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(value)
+          validator.isUrl(url, { require_protocol: true })
+          && /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url)
         );
       },
       message: errorMessages.invalidUrl,
@@ -46,8 +46,8 @@ const movieSchema = new mongoose.Schema({
     validator: {
       validation(url) {
         return (
-          validator.isUrl(url, { require_protocol: true }) &&
-          /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(value)
+          validator.isUrl(url, { require_protocol: true })
+          && /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url)
         );
       },
       message: errorMessages.invalidUrl,
@@ -59,8 +59,8 @@ const movieSchema = new mongoose.Schema({
     validator: {
       validation(url) {
         return (
-          validator.isUrl(url, { require_protocol: true }) &&
-          /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(value)
+          validator.isUrl(url, { require_protocol: true })
+          && /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url)
         );
       },
       message: errorMessages.invalidUrl,
@@ -96,17 +96,19 @@ const movieSchema = new mongoose.Schema({
     validator: {
       validate(value) {
         return (
-          validator.isAlpha(value, 'en-AU') ||
-          validator.isAlpha(value, 'en-GB') ||
-          validator.isAlpha(value, 'en-HK') ||
-          validator.isAlpha(value, 'en-IN') ||
-          validator.isAlpha(value, 'en-NZ') ||
-          validator.isAlpha(value, 'en-US') ||
-          validator.isAlpha(value, 'en-ZA') ||
-          validator.isAlpha(value, 'en-ZM')
+          validator.isAlpha(value, 'en-AU')
+          || validator.isAlpha(value, 'en-GB')
+          || validator.isAlpha(value, 'en-HK')
+          || validator.isAlpha(value, 'en-IN')
+          || validator.isAlpha(value, 'en-NZ')
+          || validator.isAlpha(value, 'en-US')
+          || validator.isAlpha(value, 'en-ZA')
+          || validator.isAlpha(value, 'en-ZM')
         );
       },
       message: `${errorMessages.invalidLanguage}. Only English is allowed.`,
     },
   },
 });
+
+module.exports = mongoose.model('movies', movieSchema);

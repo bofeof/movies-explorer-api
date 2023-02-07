@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const { UnauthorizedError } = require('../utils/errorHandler/UnauthorizedError');
 const errorMessages = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
@@ -8,8 +10,8 @@ const userSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
     required: true,
-    default: 'John Galt',
   },
+
   email: {
     type: String,
     required: true,
@@ -20,14 +22,37 @@ const userSchema = new mongoose.Schema({
       },
       message: errorMessages.invalidEmail,
     },
+  },
+
   password: {
     type: String,
     required: true,
-    select: false
-  }
+    select: false,
   },
 });
 
 userSchema.index({ email: 1 }, { unique: true });
 
-module.exports = mongoose.model('user', userSchema)
+// for login needs
+// eslint-disable-next-line func-names
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new UnauthorizedError({ message: errorMessages.wrongEmailPassword }));
+      }
+
+      // user exists, password check
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(
+            new UnauthorizedError({ message: errorMessages.wrongEmailPassword }),
+          );
+        }
+        // user exists, password is correct
+        return user;
+      });
+    });
+};
+
+module.exports = mongoose.model('user', userSchema);
