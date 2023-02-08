@@ -60,16 +60,35 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// tmp crash-test  for database and error-handler
-app.get('/crash-test', cors(corsOption), () => {
+// tmp crash-test(for deployment) for database and error-handler
+app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server goes down');
   }, 0);
 });
 
 // signin signup
-app.post('/signin', signInUser);
-app.post('/signup', createUser);
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(1),
+    }),
+  }),
+  signInUser,
+);
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(1),
+    }),
+  }),
+  createUser,
+);
 
 // another routes (protected by auth)
 app.use('/users', auth, userRouter);
@@ -84,6 +103,7 @@ app.use((req, res, next) => {
 });
 
 app.use(errorLogger);
+// celebrate-errs
 app.use(errors());
 
 // message for user about all errors

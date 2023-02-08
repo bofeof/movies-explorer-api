@@ -26,3 +26,11 @@ const newUserInfoInvalidName = {
   name: '',
   email: 'JohnGalt@test.com',
 };
+
+module.exports = {
+  newUser,
+  invalidNewUser,
+  newUserInfo,
+  newUserInfoInvalidEmail,
+  newUserInfoInvalidName,
+};
