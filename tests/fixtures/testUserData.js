@@ -11,6 +11,16 @@ const invalidNewUser = {
   password: '111111',
 };
 
+const currentUser = {
+  email: 'JohnGalt@test.com',
+  password: '111111',
+};
+
+const currentUserInvalid = {
+  email: 'JohnGalt',
+  password: '111111',
+};
+
 // update user info
 const newUserInfo = {
   name: 'polna',
@@ -30,6 +40,8 @@ const newUserInfoInvalidName = {
 module.exports = {
   newUser,
   invalidNewUser,
+  currentUser,
+  currentUserInvalid,
   newUserInfo,
   newUserInfoInvalidEmail,
   newUserInfoInvalidName,

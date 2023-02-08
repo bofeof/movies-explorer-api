@@ -18,7 +18,7 @@ module.exports.getUser = (req, res, next) => {
     });
 };
 
-// users/patch
+// users/me
 module.exports.updateUser = (req, res, next) => {
   const userId = req.user._id;
   const { name, email } = req.body;
