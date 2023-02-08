@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../app');
@@ -16,7 +16,6 @@ const {
   newUserInfoInvalidEmail,
   newUserInfoInvalidName,
 } = require('./fixtures/testUserData');
-const { response } = require('../app');
 
 let token;
 let userId;
@@ -24,13 +23,12 @@ let message;
 
 const request = supertest(app);
 
-// mongoose for removing user after all test
 beforeAll(() => {
-  mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+  mongoose.connect(`${MONGO_URL}/${MONGO_DB}`);
 });
 
 afterAll(() => {
-  mongoose.disconnect('mongodb://localhost:27017/bitfilmsdb');
+  mongoose.disconnect(`${MONGO_URL}/${MONGO_DB}`);
 });
 
 function celebrateValidationTest(response, messageTest) {
