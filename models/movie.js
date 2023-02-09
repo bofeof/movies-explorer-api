@@ -30,12 +30,9 @@ const movieSchema = new mongoose.Schema({
 
   image: {
     type: String,
-    validator: {
-      validation(url) {
-        return (
-          validator.isUrl(url, { require_protocol: true })
-          && /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url)
-        );
+    validate: {
+      validator(url) {
+        return /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url);
       },
       message: errorMessages.invalidUrl,
     },
@@ -43,12 +40,9 @@ const movieSchema = new mongoose.Schema({
 
   trailerLink: {
     type: String,
-    validator: {
-      validation(url) {
-        return (
-          validator.isUrl(url, { require_protocol: true })
-          && /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url)
-        );
+    validate: {
+      validator(url) {
+        return /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url);
       },
       message: errorMessages.invalidUrl,
     },
@@ -56,12 +50,9 @@ const movieSchema = new mongoose.Schema({
 
   thumbnail: {
     type: String,
-    validator: {
-      validation(url) {
-        return (
-          validator.isUrl(url, { require_protocol: true })
-          && /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url)
-        );
+    validate: {
+      validator(url) {
+        return /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url);
       },
       message: errorMessages.invalidUrl,
     },
@@ -82,8 +73,8 @@ const movieSchema = new mongoose.Schema({
   nameRU: {
     type: String,
     required: true,
-    validator: {
-      validate(value) {
+    validate: {
+      validator(value) {
         return validator.isAlpha(value, 'ru-RU');
       },
       message: `${errorMessages.invalidLanguage}. Only Russian is allowed.`,
@@ -93,17 +84,17 @@ const movieSchema = new mongoose.Schema({
   nameEN: {
     type: String,
     required: true,
-    validator: {
-      validate(value) {
+    validate: {
+      validator(value) {
         return (
-          validator.isAlpha(value, 'en-AU')
-          || validator.isAlpha(value, 'en-GB')
-          || validator.isAlpha(value, 'en-HK')
-          || validator.isAlpha(value, 'en-IN')
-          || validator.isAlpha(value, 'en-NZ')
-          || validator.isAlpha(value, 'en-US')
-          || validator.isAlpha(value, 'en-ZA')
-          || validator.isAlpha(value, 'en-ZM')
+          validator.isAlpha(value, 'en-AU') ||
+          validator.isAlpha(value, 'en-GB') ||
+          validator.isAlpha(value, 'en-HK') ||
+          validator.isAlpha(value, 'en-IN') ||
+          validator.isAlpha(value, 'en-NZ') ||
+          validator.isAlpha(value, 'en-US') ||
+          validator.isAlpha(value, 'en-ZA') ||
+          validator.isAlpha(value, 'en-ZM')
         );
       },
       message: `${errorMessages.invalidLanguage}. Only English is allowed.`,

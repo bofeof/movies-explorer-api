@@ -10,6 +10,7 @@ const errorMessages = {
   tokenError: 'Ошибка с токеном авторизации.',
   forbiddenError: 'Недостаточно прав для совершения действия.',
   wrongEmailPassword: 'Невозможно войти: введены неверные почта и пароль.',
+  removingMovieError: 'Невозможно удалить фильм: на найден в базе.'
 };
 
 module.exports = errorMessages;
