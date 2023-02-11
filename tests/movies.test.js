@@ -10,7 +10,12 @@ const errorMessages = require('../utils/constants');
 
 const { invalidAuthToken, newUser, currentUser } = require('./fixtures/testUserData');
 
-const { anotherMovieId, invalidMovieId, newMovie, newMovieInvalidExample } = require('./fixtures/testMoviesData');
+const {
+  anotherMovieId,
+  invalidMovieId,
+  newMovie,
+  newMovieInvalidExample,
+} = require('./fixtures/testMoviesData');
 
 let token;
 let userId;
@@ -32,153 +37,140 @@ function celebrateValidationTest(response, messageTest) {
   expect(message.validation.body.message).toBe(messageTest);
 }
 
-describe('Testing user-requests', () => {
+describe('Testing movies-requests', () => {
   describe('Sign up', () => {
-    it('Signup: сreate user with valid data, user doesnt exist', () =>
-      request
-        .post('/signup')
-        .send(newUser)
-        .then((res) => {
-          const message = JSON.parse(res.text);
-          const userData = message.data;
-          userId = userData._id;
-          expect(res.status).toBe(200);
-          expect(message).toBeDefined();
-          expect(userData._id).toBeDefined();
-          expect(userData.email).toContain(newUser.email);
-        }));
+    it('Signup: сreate user with valid data, user doesnt exist', () => request
+      .post('/signup')
+      .send(newUser)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        const userData = message.data;
+        userId = userData._id;
+        expect(res.status).toBe(200);
+        expect(message).toBeDefined();
+        expect(userData._id).toBeDefined();
+        expect(userData.email).toContain(newUser.email);
+      }));
   });
 
   describe('Sign in', () => {
-    it('Signin: login with valid data', () =>
-      request
-        .post('/signin')
-        .send(currentUser)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          token = `Bearer ${message.token}`;
-          expect(res.status).toBe(200);
-          expect(token).toBeDefined();
-        }));
+    it('Signin: login with valid data', () => request
+      .post('/signin')
+      .send(currentUser)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        token = `Bearer ${message.token}`;
+        expect(res.status).toBe(200);
+        expect(token).toBeDefined();
+      }));
   });
 
   describe('Movies: create new movie', () => {
-    it('Movie: create movie with invalid data', () =>
-      request
-        .post('/movies')
-        .set('Authorization', token)
-        .send(newMovieInvalidExample)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          celebrateValidationTest(message, '"country" is not allowed to be empty');
-        }));
+    it('Movie: create movie with invalid data', () => request
+      .post('/movies')
+      .set('Authorization', token)
+      .send(newMovieInvalidExample)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        celebrateValidationTest(message, '"country" is not allowed to be empty');
+      }));
 
-    it('Movie: create movie with valid data, auth error', () =>
-      request
-        .post('/movies')
-        .set('Authorization', invalidAuthToken)
-        .send(newMovie)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          expect(res.status).toBe(401);
-        }));
+    it('Movie: create movie with valid data, auth error', () => request
+      .post('/movies')
+      .set('Authorization', invalidAuthToken)
+      .send(newMovie)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        expect(res.status).toBe(401);
+      }));
 
-    it('Movie: create movie with valid data', () =>
-      request
-        .post('/movies')
-        .set('Authorization', token)
-        .send(newMovie)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          movieId = message.data._id;
-          expect(res.status).toBe(200);
-          expect(newMovie.country).toBe(message.data.country);
-          expect(newMovie.description).toBe(message.data.description);
-        }));
+    it('Movie: create movie with valid data', () => request
+      .post('/movies')
+      .set('Authorization', token)
+      .send(newMovie)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        movieId = message.data._id;
+        expect(res.status).toBe(200);
+        expect(newMovie.country).toBe(message.data.country);
+        expect(newMovie.description).toBe(message.data.description);
+      }));
   });
 
   describe('Movies: get saved movies', () => {
-    it('Movie: get library, auth error', () =>
-      request
-        .get('/movies')
-        .set('Authorization', invalidAuthToken)
-        .send(newMovie)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          expect(res.status).toBe(401);
-        }));
+    it('Movie: get library, auth error', () => request
+      .get('/movies')
+      .set('Authorization', invalidAuthToken)
+      .send(newMovie)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        expect(res.status).toBe(401);
+      }));
 
-    it('Movie: get library', () =>
-      request
-        .get('/movies')
-        .set('Authorization', token)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          expect(res.status).toBe(200);
-          expect(message.data).toBeDefined();
-          expect(message.data.length).toBeGreaterThanOrEqual(1);
-        }));
+    it('Movie: get library', () => request
+      .get('/movies')
+      .set('Authorization', token)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        expect(res.status).toBe(200);
+        expect(message.data).toBeDefined();
+        expect(message.data.length).toBeGreaterThanOrEqual(1);
+      }));
   });
 
   describe('Movies: delete movie (it`s created by current user)', () => {
-    it('Movie: remove movie with valid id, auth error', () =>
-      request
-        .delete(`/movies/${movieId}`)
-        .set('Authorization', invalidAuthToken)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          expect(res.status).toBe(401);
-        }));
+    it('Movie: remove movie with valid id, auth error', () => request
+      .delete(`/movies/${movieId}`)
+      .set('Authorization', invalidAuthToken)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        expect(res.status).toBe(401);
+      }));
 
-    it('Movie: remove movie with id (user is not owner)', () =>
-      request
-        .delete(`/movies/${anotherMovieId}`)
-        .set('Authorization', token)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          expect(res.status).toBe(403);
-        }));
+    it('Movie: remove movie with id (user is not owner)', () => request
+      .delete(`/movies/${anotherMovieId}`)
+      .set('Authorization', token)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        expect(res.status).toBe(403);
+      }));
 
-    it('Movie: remove movie with invalid id', () =>
-      request
-        .delete(`/movies/${invalidMovieId}`)
-        .set('Authorization', token)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          expect(res.status).toBe(400);
-        }));
+    it('Movie: remove movie with invalid id', () => request
+      .delete(`/movies/${invalidMovieId}`)
+      .set('Authorization', token)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        expect(res.status).toBe(400);
+      }));
   });
 
   describe('Remove test-user data, check login', () => {
-    it('User already exists, user cant sign up', () =>
-      request
-        .post('/signup')
-        .send(newUser)
-        .then((res) => {
-          message = JSON.parse(res.text);
-          expect(res.status).toBe(409);
-          expect(message).toStrictEqual({
-            message: errorMessages.userExistsError,
-          });
-        }));
+    it('User already exists, user cant sign up', () => request
+      .post('/signup')
+      .send(newUser)
+      .then((res) => {
+        message = JSON.parse(res.text);
+        expect(res.status).toBe(409);
+        expect(message).toStrictEqual({
+          message: errorMessages.userExistsError,
+        });
+      }));
 
     // remove test user data
-    it('Remove all saved (by owner) movies from db', () =>
-      Movie.deleteMany({ owner: { _id: userId } }));
+    it('Remove all saved (by owner) movies from db', () => Movie.deleteMany({ owner: { _id: userId } }));
     it('Remove user from db', () => User.deleteOne({ email: newUser.email }));
 
     // try to sign in again => user doesnt exist
-    it('User doesnt exist', () =>
-      request
-        .post('/signin')
-        .send(currentUser)
-        .then((res) => {
-          expect(res.status).toBe(401);
-          message = JSON.parse(res.text);
-          expect(message).toStrictEqual({
-            message: errorMessages.wrongEmailPassword,
-          });
-        }));
+    it('User doesnt exist', () => request
+      .post('/signin')
+      .send(currentUser)
+      .then((res) => {
+        expect(res.status).toBe(401);
+        message = JSON.parse(res.text);
+        expect(message).toStrictEqual({
+          message: errorMessages.wrongEmailPassword,
+        });
+      }));
   });
 
   describe('Invalid url, request method, crash test', () => {

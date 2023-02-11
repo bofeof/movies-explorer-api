@@ -1,5 +1,5 @@
 // create user
-const invalidAuthToken = "12345678910111213141516";
+const invalidAuthToken = '12345678910111213141516';
 
 const newUser = {
   name: 'John Galt',

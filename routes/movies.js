@@ -1,6 +1,6 @@
+const moviesRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { getMovies, createMovie, deleteMovie } = require('../controllers/movies');
-const moviesRouter = require('express').Router();
 
 moviesRouter.get('/', getMovies);
 
@@ -20,15 +20,17 @@ moviesRouter.post(
       movieId: Joi.string().required(),
     }),
   }),
-  createMovie
+  createMovie,
 );
 
-moviesRouter.delete('/:movieId',
-celebrate({
-  params: Joi.object().keys({
-    movieId: Joi.string().required().length(24).hex(),
-  })
-}),
-deleteMovie);
+moviesRouter.delete(
+  '/:movieId',
+  celebrate({
+    params: Joi.object().keys({
+      movieId: Joi.string().required().length(24).hex(),
+    }),
+  }),
+  deleteMovie,
+);
 
 module.exports = moviesRouter;

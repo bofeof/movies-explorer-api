@@ -1,6 +1,6 @@
 const anotherMovieId = '63e4ddce608ca9d44f8d9b72';
 
-const invalidMovieId = '12345'
+const invalidMovieId = '12345';
 
 const newMovie = {
   country: 'Val Verde',
@@ -31,4 +31,6 @@ const newMovieInvalidExample = {
   movieId: '123456789',
 };
 
-module.exports = { anotherMovieId, invalidMovieId, newMovie, newMovieInvalidExample };
+module.exports = {
+  anotherMovieId, invalidMovieId, newMovie, newMovieInvalidExample,
+};

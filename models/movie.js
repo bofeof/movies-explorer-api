@@ -87,14 +87,14 @@ const movieSchema = new mongoose.Schema({
     validate: {
       validator(value) {
         return (
-          validator.isAlpha(value, 'en-AU') ||
-          validator.isAlpha(value, 'en-GB') ||
-          validator.isAlpha(value, 'en-HK') ||
-          validator.isAlpha(value, 'en-IN') ||
-          validator.isAlpha(value, 'en-NZ') ||
-          validator.isAlpha(value, 'en-US') ||
-          validator.isAlpha(value, 'en-ZA') ||
-          validator.isAlpha(value, 'en-ZM')
+          validator.isAlpha(value, 'en-AU')
+          || validator.isAlpha(value, 'en-GB')
+          || validator.isAlpha(value, 'en-HK')
+          || validator.isAlpha(value, 'en-IN')
+          || validator.isAlpha(value, 'en-NZ')
+          || validator.isAlpha(value, 'en-US')
+          || validator.isAlpha(value, 'en-ZA')
+          || validator.isAlpha(value, 'en-ZM')
         );
       },
       message: `${errorMessages.invalidLanguage}. Only English is allowed.`,
