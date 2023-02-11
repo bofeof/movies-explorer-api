@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "lint": "npx eslint .",
-    "test": "jest"
+    "test": "jest --verbose --forceExit --detectOpenHandles  --watchAll --maxWorkers=1"
   },
   "repository": {
     "type": "git",

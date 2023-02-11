@@ -1,5 +1,6 @@
 const Movie = require('../models/movie');
 const errorMessages = require('../utils/constants');
+const { ForbiddenError } = require('../utils/errorHandler/ForbiddenError');
 
 // /movies
 module.exports.getMovies = (req, res, next) => {
@@ -19,7 +20,7 @@ module.exports.createMovie = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-// /movies/id
+// /movies/:id
 module.exports.deleteMovie = (req, res, next) => {
   const ownerId = req.user._id;
   const {movieId} = req.params;

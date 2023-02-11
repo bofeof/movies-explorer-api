@@ -1,4 +1,6 @@
 // create user
+const invalidAuthToken = "12345678910111213141516";
+
 const newUser = {
   name: 'John Galt',
   email: 'JohnGalt@test.com',
@@ -38,6 +40,7 @@ const newUserInfoInvalidName = {
 };
 
 module.exports = {
+  invalidAuthToken,
   newUser,
   invalidNewUser,
   currentUser,
