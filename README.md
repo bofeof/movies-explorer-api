@@ -17,11 +17,11 @@ Backend:
 IP prod 51.250.12.246  
 Current prod: ... 
 or
-Local: http://localhost:3000
+Local: http://localhost:3005
 
 #### API
 
-- Url: ... or http://localhost:3000
+- Url: ... or http://localhost:3005
 - headers: {  
    authorization: "Bearer " + your token,  
    "Content-Type": "application/json",  
@@ -42,6 +42,6 @@ Method | Endpoint | Action | Token required ('Bearer ' + jwt) | Required body da
 ### Settings for backend. All comands are located in package.json:
 
 - `npm install` Install all dependencies before start.
-- `npm run start` Run Movies-explorer server. http://localhost:3000
+- `npm run start` Run Movies-explorer server. http://localhost:3005
 - `npm run dev` Run server with hot-reload (for dev purposes)
 - `npm run test` Jest request-tests for user and movies actions (for dev purposes)

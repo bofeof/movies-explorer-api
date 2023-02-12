@@ -13,16 +13,15 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
 
-// middlewares
+// middlewares logger
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 // routes
 const apiRouter = require('./routes/index');
 
 // error-handlers
-const errorMessages = require('./utils/errorMessages');
-const { NotFoundError } = require('./utils/errorHandler/NotFoundError');
 const { centalizedErrorHandler } = require('./utils/errorHandler/centralizedErrorHandler');
+const { wrongRouteErrorHandler } = require('./utils/errorHandler/wrongRouteErrorHandler');
 
 // request settings before start:
 const requestLimitOptions = require('./utils/requestLimitOptions');
@@ -49,13 +48,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // routes
 app.use('/api', apiRouter);
 
-app.use((req, res, next) => {
-  next(
-    new NotFoundError({
-      message: errorMessages.routeError,
-    }),
-  );
-});
+// wrong routes
+app.use(wrongRouteErrorHandler);
 
 app.use(errorLogger);
 
