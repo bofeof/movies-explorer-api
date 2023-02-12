@@ -15,13 +15,13 @@ Backend:
 ## Backend part:
 
 IP prod 51.250.12.246  
-Current prod: ... 
+Current prod: https://api.bofeof-movies.nomoredomains.work 
 or
 Local: http://localhost:3005
 
 #### API
 
-- Url: ... or http://localhost:3005
+- Url: https://api.bofeof-movies.nomoredomains.work or http://localhost:3005
 - headers: {  
    authorization: "Bearer " + your token,  
    "Content-Type": "application/json",  
