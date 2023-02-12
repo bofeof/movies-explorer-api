@@ -1,7 +1,7 @@
 // get payload and set to req.user = payload
 const { NODE_ENV, JWT_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
-const errorMessages = require('../utils/constants');
+const errorMessages = require('../utils/errorMessages');
 
 const { UnauthorizedError } = require('../utils/errorHandler/UnauthorizedError');
 

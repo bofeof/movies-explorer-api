@@ -5,7 +5,7 @@ const app = require('../app');
 const User = require('../models/user');
 
 const { MONGO_URL, MONGO_DB } = process.env;
-const errorMessages = require('../utils/constants');
+const errorMessages = require('../utils/errorMessages');
 
 const {
   invalidAuthToken,
@@ -40,7 +40,7 @@ function celebrateValidationTest(response, messageTest) {
 describe('Testing user-requests', () => {
   describe('Sign up', () => {
     it('Signup: сreate user with invalid data', () => request
-      .post('/signup')
+      .post('/api/signup')
       .send(invalidNewUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -49,7 +49,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Signup: сreate user with valid data, user doesnt exist', () => request
-      .post('/signup')
+      .post('/api/signup')
       .send(newUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -62,7 +62,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Signup: сreate user with valid data again, user already exists', () => request
-      .post('/signup')
+      .post('/api/signup')
       .send(newUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -73,7 +73,7 @@ describe('Testing user-requests', () => {
 
   describe('Sign in', () => {
     it('Signin: login with invalid data', () => request
-      .post('/signin')
+      .post('/api/signin')
       .send(currentUserInvalid)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -82,7 +82,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Signin: login with valid data', () => request
-      .post('/signin')
+      .post('/api/signin')
       .send(currentUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -92,7 +92,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Get current user', () => request
-      .get('/users/me')
+      .get('/api/users/me')
       .set('Authorization', token)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -102,7 +102,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Get current user, auth error', () => request
-      .get('/users/me')
+      .get('/api/users/me')
       .set('Authorization', invalidAuthToken)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -113,7 +113,7 @@ describe('Testing user-requests', () => {
 
   describe('Change user data', () => {
     it('Change user data: invalid data (email)', () => request
-      .patch('/users/me')
+      .patch('/api/users/me')
       .set('Authorization', token)
       .send(newUserInfoInvalidEmail)
       .then((res) => {
@@ -123,7 +123,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Change user data: invalid data (name)', () => request
-      .patch('/users/me')
+      .patch('/api/users/me')
       .set('Authorization', token)
       .send(newUserInfoInvalidName)
       .then((res) => {
@@ -133,7 +133,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Change user data: valid data', () => request
-      .patch('/users/me')
+      .patch('/api/users/me')
       .set('Authorization', token)
       .send(newUserInfo)
       .then((res) => {
@@ -144,7 +144,7 @@ describe('Testing user-requests', () => {
       }));
 
     it('Change user data: valid data, auth error', () => request
-      .patch('/users/me')
+      .patch('/api/users/me')
       .set('Authorization', invalidAuthToken)
       .send(newUserInfo)
       .then((res) => {
@@ -156,7 +156,7 @@ describe('Testing user-requests', () => {
 
   describe('Remove test-user, check login', () => {
     it('User already exists, user cant sign up', () => request
-      .post('/signup')
+      .post('/api/signup')
       .send(newUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -171,7 +171,7 @@ describe('Testing user-requests', () => {
 
     // try to sign in again => user doesnt exist
     it('User doesnt exist', () => request
-      .post('/signin')
+      .post('/api/signin')
       .send(currentUser)
       .then((res) => {
         expect(res.status).toBe(401);
@@ -184,19 +184,19 @@ describe('Testing user-requests', () => {
 
   describe('Invalid url, request method, crash test', () => {
     it('Check invalid url or method, example 1', () => {
-      request.get('/users/me/abc/def//', (res) => {
+      request.get('/api/users/me/abc/def//', (res) => {
         expect(res.status).toBe(404);
       });
     });
 
     it('Check invalid url or method, example 2', () => {
-      request.get('/users/e/aaa/xxx/123', (res) => {
+      request.get('/api/users/e/aaa/xxx/123', (res) => {
         expect(res.status).toBe(404);
       });
     });
 
     it('Crash test', () => {
-      request.get('/crash-test', (res) => {
+      request.get('/api/crash-test', (res) => {
         expect(res.status).toBe(500);
       });
     });

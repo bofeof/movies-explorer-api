@@ -2,7 +2,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const errorMessages = require('../utils/constants');
+const errorMessages = require('../utils/errorMessages');
 const { DublicateDataError } = require('../utils/errorHandler/DublicateDataError');
 const { ValidationError } = require('../utils/errorHandler/ValidationError');
 

@@ -6,7 +6,7 @@ const User = require('../models/user');
 const Movie = require('../models/movie');
 
 const { MONGO_URL, MONGO_DB } = process.env;
-const errorMessages = require('../utils/constants');
+const errorMessages = require('../utils/errorMessages');
 
 const { invalidAuthToken, newUser, currentUser } = require('./fixtures/testUserData');
 
@@ -40,7 +40,7 @@ function celebrateValidationTest(response, messageTest) {
 describe('Testing movies-requests', () => {
   describe('Sign up', () => {
     it('Signup: сreate user with valid data, user doesnt exist', () => request
-      .post('/signup')
+      .post('/api/signup')
       .send(newUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -55,7 +55,7 @@ describe('Testing movies-requests', () => {
 
   describe('Sign in', () => {
     it('Signin: login with valid data', () => request
-      .post('/signin')
+      .post('/api/signin')
       .send(currentUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -67,7 +67,7 @@ describe('Testing movies-requests', () => {
 
   describe('Movies: create new movie', () => {
     it('Movie: create movie with invalid data', () => request
-      .post('/movies')
+      .post('/api/movies')
       .set('Authorization', token)
       .send(newMovieInvalidExample)
       .then((res) => {
@@ -76,7 +76,7 @@ describe('Testing movies-requests', () => {
       }));
 
     it('Movie: create movie with valid data, auth error', () => request
-      .post('/movies')
+      .post('/api/movies')
       .set('Authorization', invalidAuthToken)
       .send(newMovie)
       .then((res) => {
@@ -85,7 +85,7 @@ describe('Testing movies-requests', () => {
       }));
 
     it('Movie: create movie with valid data', () => request
-      .post('/movies')
+      .post('/api/movies')
       .set('Authorization', token)
       .send(newMovie)
       .then((res) => {
@@ -99,7 +99,7 @@ describe('Testing movies-requests', () => {
 
   describe('Movies: get saved movies', () => {
     it('Movie: get library, auth error', () => request
-      .get('/movies')
+      .get('/api/movies')
       .set('Authorization', invalidAuthToken)
       .send(newMovie)
       .then((res) => {
@@ -108,7 +108,7 @@ describe('Testing movies-requests', () => {
       }));
 
     it('Movie: get library', () => request
-      .get('/movies')
+      .get('/api/movies')
       .set('Authorization', token)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -120,7 +120,7 @@ describe('Testing movies-requests', () => {
 
   describe('Movies: delete movie (it`s created by current user)', () => {
     it('Movie: remove movie with valid id, auth error', () => request
-      .delete(`/movies/${movieId}`)
+      .delete(`/api/movies/${movieId}`)
       .set('Authorization', invalidAuthToken)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -128,7 +128,7 @@ describe('Testing movies-requests', () => {
       }));
 
     it('Movie: remove movie with id (user is not owner)', () => request
-      .delete(`/movies/${anotherMovieId}`)
+      .delete(`/api/movies/${anotherMovieId}`)
       .set('Authorization', token)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -136,7 +136,7 @@ describe('Testing movies-requests', () => {
       }));
 
     it('Movie: remove movie with invalid id', () => request
-      .delete(`/movies/${invalidMovieId}`)
+      .delete(`/api/movies/${invalidMovieId}`)
       .set('Authorization', token)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -146,7 +146,7 @@ describe('Testing movies-requests', () => {
 
   describe('Remove test-user data, check login', () => {
     it('User already exists, user cant sign up', () => request
-      .post('/signup')
+      .post('/api/signup')
       .send(newUser)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -162,7 +162,7 @@ describe('Testing movies-requests', () => {
 
     // try to sign in again => user doesnt exist
     it('User doesnt exist', () => request
-      .post('/signin')
+      .post('/api/signin')
       .send(currentUser)
       .then((res) => {
         expect(res.status).toBe(401);
@@ -175,19 +175,19 @@ describe('Testing movies-requests', () => {
 
   describe('Invalid url, request method, crash test', () => {
     it('Check invalid url or method, example 1', () => {
-      request.get('/movies/me/abc/def//', (res) => {
+      request.get('/api/movies/me/abc/def//', (res) => {
         expect(res.status).toBe(404);
       });
     });
 
     it('Check invalid url or method, example 2', () => {
-      request.get('/movies/e/aaa/xxx/123', (res) => {
+      request.get('/api/movies/e/aaa/xxx/123', (res) => {
         expect(res.status).toBe(404);
       });
     });
 
     it('Crash test', () => {
-      request.get('/crash-test', (res) => {
+      request.get('/api/crash-test', (res) => {
         expect(res.status).toBe(500);
       });
     });

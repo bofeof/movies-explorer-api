@@ -1,7 +1,10 @@
 const Movie = require('../models/movie');
-const errorMessages = require('../utils/constants');
+
+const errorMessages = require('../utils/errorMessages');
+
 const { ForbiddenError } = require('../utils/errorHandler/ForbiddenError');
 const { NotFoundError } = require('../utils/errorHandler/NotFoundError');
+const { ValidationError } = require('../utils/errorHandler/ValidationError');
 
 // /movies
 module.exports.getMovies = (req, res, next) => {
@@ -17,8 +20,24 @@ module.exports.createMovie = (req, res, next) => {
   const owner = req.user._id;
   const movieData = { ...req.body, owner };
   Movie.create(movieData)
-    .then((data) => res.send({ data }))
-    .catch((err) => next(err));
+    .then((movie) => Movie.findById(movie._id)
+      .populate('owner')
+      .then((data) => {
+        if (!data) {
+          next(new NotFoundError({ message: errorMessages.movieIdError }));
+        }
+        res.send({ data });
+      })
+      .catch((err) => {
+        next(err);
+      }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError({ message: err.message }));
+        return;
+      }
+      next(err);
+    });
 };
 
 // /movies/:id
