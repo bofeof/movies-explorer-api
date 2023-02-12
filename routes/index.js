@@ -1,6 +1,3 @@
-// validation
-const { celebrate, Joi } = require('celebrate');
-
 const apiRouter = require('express').Router();
 const userRouter = require('./users');
 const moviesRouter = require('./movies');
@@ -8,29 +5,21 @@ const moviesRouter = require('./movies');
 // controllers: action for users
 const { signInUser, createUser } = require('../controllers/users');
 
+// validators
+const { signinValidation, signupValidation } = require('../utils/celebrateValidation');
+
 // middlewares
 const auth = require('../middlewares/auth');
 
 apiRouter.post(
   '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(1),
-    }),
-  }),
+  signinValidation,
   signInUser,
 );
 
 apiRouter.post(
   '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(1),
-    }),
-  }),
+  signupValidation,
   createUser,
 );
 
