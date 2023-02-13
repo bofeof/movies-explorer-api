@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 const errorMessages = require('../utils/errorMessages');
 
 const movieSchema = new mongoose.Schema({
@@ -30,6 +29,7 @@ const movieSchema = new mongoose.Schema({
 
   image: {
     type: String,
+    required: true,
     validate: {
       validator(url) {
         return /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url);
@@ -40,6 +40,7 @@ const movieSchema = new mongoose.Schema({
 
   trailerLink: {
     type: String,
+    required: true,
     validate: {
       validator(url) {
         return /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url);
@@ -50,6 +51,7 @@ const movieSchema = new mongoose.Schema({
 
   thumbnail: {
     type: String,
+    required: true,
     validate: {
       validator(url) {
         return /^(http|https)\W+[w]{0,3}\S*[#]*$/gi.test(url);
@@ -66,39 +68,18 @@ const movieSchema = new mongoose.Schema({
 
   // id form MoviesExplorer-request
   movieId: {
-    type: String,
+    type: Number,
     required: true,
   },
 
   nameRU: {
     type: String,
     required: true,
-    validate: {
-      validator(value) {
-        return validator.isAlpha(value, 'ru-RU');
-      },
-      message: `${errorMessages.invalidLanguage}. Only Russian is allowed.`,
-    },
   },
 
   nameEN: {
     type: String,
     required: true,
-    validate: {
-      validator(value) {
-        return (
-          validator.isAlpha(value, 'en-AU')
-          || validator.isAlpha(value, 'en-GB')
-          || validator.isAlpha(value, 'en-HK')
-          || validator.isAlpha(value, 'en-IN')
-          || validator.isAlpha(value, 'en-NZ')
-          || validator.isAlpha(value, 'en-US')
-          || validator.isAlpha(value, 'en-ZA')
-          || validator.isAlpha(value, 'en-ZM')
-        );
-      },
-      message: `${errorMessages.invalidLanguage}. Only English is allowed.`,
-    },
   },
 });
 

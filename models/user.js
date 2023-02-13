@@ -33,23 +33,20 @@ const userSchema = new mongoose.Schema({
 
 userSchema.index({ email: 1 }, { unique: true });
 
-// for login needs
-// eslint-disable-next-line func-names
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new UnauthorizedError({ message: errorMessages.wrongEmailPassword }));
       }
 
-      // user exists, password check
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           return Promise.reject(
             new UnauthorizedError({ message: errorMessages.wrongEmailPassword }),
           );
         }
-        // user exists, password is correct
+
         return user;
       });
     });

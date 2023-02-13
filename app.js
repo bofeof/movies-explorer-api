@@ -1,9 +1,6 @@
 require('dotenv').config({ path: '../.env' });
 
-const { MONGO_URL, MONGO_DB } = process.env;
-
 const express = require('express');
-const mongoose = require('mongoose');
 
 // validation
 const { errors } = require('celebrate');
@@ -21,19 +18,12 @@ const apiRouter = require('./routes/index');
 
 // error-handlers
 const { centalizedErrorHandler } = require('./utils/errorHandler/centralizedErrorHandler');
-const { wrongRouteErrorHandler } = require('./utils/errorHandler/wrongRouteErrorHandler');
 
 // request settings before start:
 const requestLimitOptions = require('./utils/requestLimitOptions');
 const corsOption = require('./utils/corsOptions');
 
 const app = express();
-
-mongoose.set('strictQuery', true);
-mongoose.connect(`${MONGO_URL}/${MONGO_DB}`, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Connected to MongoDB. Database: ${MONGO_DB}`);
-});
 
 // request settings
 app.use(cors(corsOption));
@@ -47,9 +37,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 app.use('/api', apiRouter);
-
-// wrong routes
-app.use(wrongRouteErrorHandler);
 
 app.use(errorLogger);
 

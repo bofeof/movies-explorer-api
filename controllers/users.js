@@ -3,10 +3,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const errorMessages = require('../utils/errorMessages');
+
+const { developmentEnvConstants } = require('../utils/developmentEnvConstants');
+
 const { DublicateDataError } = require('../utils/errorHandler/DublicateDataError');
 const { ValidationError } = require('../utils/errorHandler/ValidationError');
 
-// users/me
 module.exports.getUser = (req, res, next) => {
   const currentUserId = req.user._id;
   User.findById(currentUserId)
@@ -18,7 +20,6 @@ module.exports.getUser = (req, res, next) => {
     });
 };
 
-// users/me
 module.exports.updateUser = (req, res, next) => {
   const userId = req.user._id;
   const { name, email } = req.body;
@@ -33,6 +34,17 @@ module.exports.updateUser = (req, res, next) => {
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
+      // check 11000, user already exists
+      if (err.code === 11000) {
+        next(new DublicateDataError({
+          message: errorMessages.changeEmailError,
+        }));
+        return;
+      }
+      if (err.name === 'ValidationError') {
+        next(new ValidationError({ message: err.message }));
+        return;
+      }
       next(err);
     });
 };
@@ -72,10 +84,9 @@ module.exports.signInUser = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      // create jwt
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        NODE_ENV === 'production' ? JWT_SECRET : developmentEnvConstants.JWT_SECRET,
         { expiresIn: '7d' },
       );
       res.send({ token });

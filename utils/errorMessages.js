@@ -1,7 +1,6 @@
 const errorMessages = {
   invalidEmail: 'Некорректная почта.',
   invalidUrl: 'Некорректный Url.',
-  invalidLanguage: 'Некорректный язык ввода.',
   userIdError: 'Невозможно найти пользователя, не существует в базе.',
   movieIdError: 'Невозможно найти фильм, не существует в базе.',
   userExistsError:
@@ -12,6 +11,7 @@ const errorMessages = {
   forbiddenError: 'Недостаточно прав для совершения действия.',
   wrongEmailPassword: 'Невозможно войти: введены неверные почта и пароль.',
   removingMovieError: 'Невозможно удалить фильм: на найден в базе.',
+  changeEmailError: 'Невозможно изменить почту. Данная почта занята другим пользователем.',
 };
 
 module.exports = errorMessages;

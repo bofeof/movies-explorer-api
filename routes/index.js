@@ -2,13 +2,12 @@ const apiRouter = require('express').Router();
 const userRouter = require('./users');
 const moviesRouter = require('./movies');
 
-// controllers: action for users
+const { wrongRouteErrorHandler } = require('../utils/errorHandler/wrongRouteErrorHandler');
+
 const { signInUser, createUser } = require('../controllers/users');
 
-// validators
 const { signinValidation, signupValidation } = require('../utils/celebrateValidation');
 
-// middlewares
 const auth = require('../middlewares/auth');
 
 apiRouter.post(
@@ -23,11 +22,11 @@ apiRouter.post(
   createUser,
 );
 
-// protected by auth
 apiRouter.use('/users', auth, userRouter);
 apiRouter.use('/movies', auth, moviesRouter);
+apiRouter.use('/', auth, wrongRouteErrorHandler);
 
-// tmp crash-test(for deployment) for database and error-handler
+// crash-test for database and error-handler
 apiRouter.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server goes down');

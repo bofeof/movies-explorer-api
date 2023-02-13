@@ -4,7 +4,14 @@ const mongoose = require('mongoose');
 const app = require('../app');
 const User = require('../models/user');
 
-const { MONGO_URL, MONGO_DB } = process.env;
+const {
+  NODE_ENV = 'development',
+  MONGO_URL_PROD,
+  MONGO_DB_PROD,
+} = process.env;
+
+const { developmentEnvConstants } = require('../utils/developmentEnvConstants');
+
 const errorMessages = require('../utils/errorMessages');
 
 const {
@@ -18,6 +25,9 @@ const {
   newUserInfoInvalidName,
 } = require('./fixtures/testUserData');
 
+const MONGO_URL = NODE_ENV === 'production' ? MONGO_URL_PROD : developmentEnvConstants.MONGO_URL;
+const MONGO_DB = NODE_ENV === 'production' ? MONGO_DB_PROD : developmentEnvConstants.MONGO_DB;
+
 let token;
 let userId;
 let message;
@@ -25,6 +35,7 @@ let message;
 const request = supertest(app);
 
 beforeAll(() => {
+  mongoose.set('strictQuery', true);
   mongoose.connect(`${MONGO_URL}/${MONGO_DB}`);
 });
 

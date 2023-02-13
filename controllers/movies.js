@@ -6,7 +6,6 @@ const { ForbiddenError } = require('../utils/errorHandler/ForbiddenError');
 const { NotFoundError } = require('../utils/errorHandler/NotFoundError');
 const { ValidationError } = require('../utils/errorHandler/ValidationError');
 
-// /movies
 module.exports.getMovies = (req, res, next) => {
   const currentUserId = req.user._id;
   Movie.find({ owner: currentUserId })
@@ -15,7 +14,6 @@ module.exports.getMovies = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-// /movies
 module.exports.createMovie = (req, res, next) => {
   const owner = req.user._id;
   const movieData = { ...req.body, owner };
@@ -40,35 +38,29 @@ module.exports.createMovie = (req, res, next) => {
     });
 };
 
-// /movies/:id
 module.exports.deleteMovie = (req, res, next) => {
   const ownerId = req.user._id;
   const { movieId } = req.params;
 
-  //  find movie by id
   Movie.findById(movieId)
-    .then((movie) => {
+    .then(async (movie) => {
       if (!movie) {
         next(new NotFoundError({ message: errorMessages.removingMovieError }));
         return;
       }
 
-      // movie exists
       const ownerMovieId = movie.owner._id.toString();
-      // check permission
       if (ownerId !== ownerMovieId) {
         next(new ForbiddenError({ message: errorMessages.forbiddenError }));
         return;
       }
 
-      // removing
-      Movie.findByIdAndRemove(movieId, (err, removingMovie) => {
-        if (err) {
-          next(err);
-          return;
-        }
+      try {
+        const removingMovie = await Movie.findByIdAndRemove(movieId).populate('owner');
         res.send({ data: removingMovie });
-      }).populate('owner');
+      } catch (err) {
+        next(err);
+      }
     })
     .catch((err) => next(err));
 };

@@ -11,9 +11,10 @@ const newMovie = {
   image:
     'https://todaysparent.mblycdn.com/tp/resized/2017/06/1600x900/when-your-kid-becomes-a-meme.jpg',
   trailerLink: 'https://youtu.be/bHXejJq5vr0',
+  thumbnail: 'https://todaysparent.mblycdn.com/tp/resized/2017/06/1600x900/when-your-kid-becomes-a-meme.jpg',
   nameRU: 'Неизвестно',
   nameEN: 'Unknown',
-  movieId: '123456789',
+  movieId: 123456789,
 };
 
 // invalid country and trailer link
@@ -26,9 +27,10 @@ const newMovieInvalidExample = {
   image:
     'https://todaysparent.mblycdn.com/tp/resized/2017/06/1600x900/when-your-kid-becomes-a-meme.jpg',
   trailerLink: 'hyoutu.be/bHXejJq5vr0',
+  thumbnail: 'https://todaysparent.mblycdn.com/tp/resized/2017/06/1600x900/when-your-kid-becomes-a-meme.jpg',
   nameRU: 'Неизвестно',
   nameEN: 'Unknown',
-  movieId: '123456789',
+  movieId: 123456789,
 };
 
 module.exports = {
