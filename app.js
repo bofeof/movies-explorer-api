@@ -18,12 +18,15 @@ const apiRouter = require('./routes/index');
 
 // error-handlers
 const { centalizedErrorHandler } = require('./utils/errorHandler/centralizedErrorHandler');
+const { uncaughtExceptionHandler } = require('./utils/errorHandler/uncaughtExceptionHandler');
 
 // request settings before start:
 const requestLimitOptions = require('./utils/requestLimitOptions');
 const corsOption = require('./utils/corsOptions');
 
 const app = express();
+
+process.on('uncaughtException', uncaughtExceptionHandler);
 
 // request settings
 app.use(cors(corsOption));
