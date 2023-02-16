@@ -8,14 +8,12 @@ const { developmentEnvConstants } = require('../utils/developmentEnvConstants');
 const { UnauthorizedError } = require('../utils/errorHandler/UnauthorizedError');
 
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  const token = req.cookies.jwtMesto;
+  if (!token) {
     next(new UnauthorizedError({ message: errorMessages.authError }));
     return;
   }
 
-  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
@@ -26,5 +24,6 @@ module.exports = (req, res, next) => {
   }
 
   req.user = payload;
+
   next();
 };

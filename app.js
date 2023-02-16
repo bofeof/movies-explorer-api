@@ -2,6 +2,8 @@ require('dotenv').config({ path: '../.env' });
 
 const express = require('express');
 
+const cookieParser = require('cookie-parser');
+
 // validation
 const { errors } = require('celebrate');
 
@@ -25,6 +27,8 @@ const requestLimitOptions = require('./utils/requestLimitOptions');
 const corsOption = require('./utils/corsOptions');
 
 const app = express();
+
+app.use(cookieParser());
 
 process.on('uncaughtException', uncaughtExceptionHandler);
 
