@@ -23,15 +23,17 @@ Local: http://localhost:3005
 
 - Url: https://api.bofeof-movies.nomoredomains.work or http://localhost:3005
 - headers: {  
-   authorization: "Bearer " + your token,  
    "Content-Type": "application/json",  
   }
 
+  Auth is based on jwt-cookie
+
 Available endpoints:
-Method | Endpoint | Action | Token required ('Bearer ' + jwt) | Required body data |
+Method | Endpoint | Action | Auth required | Required body data |
 |--------|------------------|-------------------------------|----------------------------------|----------------------------------------------------------------------------------------------------|
 | POST | api/signin | Log in | | email, password |
 | POST | api/signup | Create user | | name, email, password |
+| Get | api/signout | Log out | Yes |  |
 | GET | api/users/me | Get info about current user | Yes | |
 | PATCH | api/users/me | Update user name and/or email | Yes | name, email |
 | POST | api/movies | Create movie | Yes | country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId |
