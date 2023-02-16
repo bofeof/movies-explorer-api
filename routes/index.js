@@ -4,7 +4,7 @@ const moviesRouter = require('./movies');
 
 const { wrongRouteErrorHandler } = require('../utils/errorHandler/wrongRouteErrorHandler');
 
-const { signInUser, createUser } = require('../controllers/users');
+const { signInUser, createUser, signOut } = require('../controllers/users');
 
 const { signinValidation, signupValidation } = require('../utils/celebrateValidation');
 
@@ -21,6 +21,8 @@ apiRouter.post(
   signupValidation,
   createUser,
 );
+
+apiRouter.get('/signout', auth, signOut);
 
 apiRouter.use('/users', auth, userRouter);
 apiRouter.use('/movies', auth, moviesRouter);
