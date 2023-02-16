@@ -31,8 +31,13 @@ let token;
 let userId;
 let message;
 let movieId;
+let cookieData;
 
 const request = supertest(app);
+
+function getJwtToken(data) {
+  return data.split(';')[0].split('=')[1];
+}
 
 beforeAll(() => {
   mongoose.set('strictQuery', true);
@@ -70,7 +75,8 @@ describe('Testing movies-requests', () => {
       .send(currentUser)
       .then((res) => {
         message = JSON.parse(res.text);
-        token = `Bearer ${message.token}`;
+        cookieData = res.header['set-cookie'];
+        token = `${getJwtToken(cookieData[0])}`;
         expect(res.status).toBe(200);
         expect(token).toBeDefined();
       }));
@@ -79,7 +85,7 @@ describe('Testing movies-requests', () => {
   describe('Movies: create new movie', () => {
     it('Movie: create movie with invalid data', () => request
       .post('/api/movies')
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .send(newMovieInvalidExample)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -88,7 +94,7 @@ describe('Testing movies-requests', () => {
 
     it('Movie: create movie with valid data, auth error', () => request
       .post('/api/movies')
-      .set('Authorization', invalidAuthToken)
+      .set('Cookie', `jwtMesto=${invalidAuthToken}`)
       .send(newMovie)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -97,7 +103,7 @@ describe('Testing movies-requests', () => {
 
     it('Movie: create movie with valid data', () => request
       .post('/api/movies')
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .send(newMovie)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -111,7 +117,7 @@ describe('Testing movies-requests', () => {
   describe('Movies: get saved movies', () => {
     it('Movie: get library, auth error', () => request
       .get('/api/movies')
-      .set('Authorization', invalidAuthToken)
+      .set('Cookie', `jwtMesto=${invalidAuthToken}`)
       .send(newMovie)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -120,7 +126,7 @@ describe('Testing movies-requests', () => {
 
     it('Movie: get library', () => request
       .get('/api/movies')
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .then((res) => {
         message = JSON.parse(res.text);
         expect(res.status).toBe(200);
@@ -132,7 +138,7 @@ describe('Testing movies-requests', () => {
   describe('Movies: delete movie (it`s created by current user)', () => {
     it('Movie: remove movie with valid id, auth error', () => request
       .delete(`/api/movies/${movieId}`)
-      .set('Authorization', invalidAuthToken)
+      .set('Cookie', `jwtMesto=${invalidAuthToken}`)
       .then((res) => {
         message = JSON.parse(res.text);
         expect(res.status).toBe(401);
@@ -140,7 +146,7 @@ describe('Testing movies-requests', () => {
 
     it('Movie: remove movie with id (user is not owner)', () => request
       .delete(`/api/movies/${anotherMovieId}`)
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .then((res) => {
         message = JSON.parse(res.text);
         expect(res.status).toBe(403);
@@ -148,7 +154,7 @@ describe('Testing movies-requests', () => {
 
     it('Movie: remove movie with invalid id', () => request
       .delete(`/api/movies/${invalidMovieId}`)
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .then((res) => {
         message = JSON.parse(res.text);
         expect(res.status).toBe(400);

@@ -4,11 +4,7 @@ const mongoose = require('mongoose');
 const app = require('../app');
 const User = require('../models/user');
 
-const {
-  NODE_ENV = 'development',
-  MONGO_URL_PROD,
-  MONGO_DB_PROD,
-} = process.env;
+const { NODE_ENV = 'development', MONGO_URL_PROD, MONGO_DB_PROD } = process.env;
 
 const { developmentEnvConstants } = require('../utils/developmentEnvConstants');
 
@@ -31,8 +27,13 @@ const MONGO_DB = NODE_ENV === 'production' ? MONGO_DB_PROD : developmentEnvConst
 let token;
 let userId;
 let message;
+let cookieData;
 
 const request = supertest(app);
+
+function getJwtToken(data) {
+  return data.split(';')[0].split('=')[1];
+}
 
 beforeAll(() => {
   mongoose.set('strictQuery', true);
@@ -97,14 +98,15 @@ describe('Testing user-requests', () => {
       .send(currentUser)
       .then((res) => {
         message = JSON.parse(res.text);
-        token = `Bearer ${message.token}`;
+        cookieData = res.header['set-cookie'];
+        token = `${getJwtToken(cookieData[0])}`;
         expect(res.status).toBe(200);
         expect(token).toBeDefined();
       }));
 
     it('Get current user', () => request
       .get('/api/users/me')
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .then((res) => {
         message = JSON.parse(res.text);
         const userData = message.data;
@@ -114,18 +116,18 @@ describe('Testing user-requests', () => {
 
     it('Get current user, auth error', () => request
       .get('/api/users/me')
-      .set('Authorization', invalidAuthToken)
+      .set('Cookie', `jwtMesto=${invalidAuthToken}`)
       .then((res) => {
         message = JSON.parse(res.text);
         expect(res.status).toBe(401);
-        expect(message.message).toBe(errorMessages.authError);
+        expect(message.message).toBe(errorMessages.tokenError);
       }));
   });
 
   describe('Change user data', () => {
     it('Change user data: invalid data (email)', () => request
       .patch('/api/users/me')
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .send(newUserInfoInvalidEmail)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -135,7 +137,7 @@ describe('Testing user-requests', () => {
 
     it('Change user data: invalid data (name)', () => request
       .patch('/api/users/me')
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .send(newUserInfoInvalidName)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -145,7 +147,7 @@ describe('Testing user-requests', () => {
 
     it('Change user data: valid data', () => request
       .patch('/api/users/me')
-      .set('Authorization', token)
+      .set('Cookie', `jwtMesto=${token}`)
       .send(newUserInfo)
       .then((res) => {
         message = JSON.parse(res.text);
@@ -156,12 +158,12 @@ describe('Testing user-requests', () => {
 
     it('Change user data: valid data, auth error', () => request
       .patch('/api/users/me')
-      .set('Authorization', invalidAuthToken)
+      .set('Cookie', `jwtMesto=${invalidAuthToken}`)
       .send(newUserInfo)
       .then((res) => {
         message = JSON.parse(res.text);
         expect(res.status).toBe(401);
-        expect(message.message).toEqual(errorMessages.authError);
+        expect(message.message).toEqual(errorMessages.tokenError);
       }));
   });
 
