@@ -8,7 +8,7 @@ const { developmentEnvConstants } = require('../utils/developmentEnvConstants');
 const { UnauthorizedError } = require('../utils/errorHandler/UnauthorizedError');
 
 module.exports = (req, res, next) => {
-  const token = req.cookies.jwtMesto;
+  const token = req.cookies.jwtMovies;
   if (!token) {
     next(new UnauthorizedError({ message: errorMessages.authError }));
     return;

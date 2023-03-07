@@ -94,7 +94,7 @@ module.exports.signInUser = (req, res, next) => {
         { expiresIn: '7d' },
       );
 
-      res.cookie('jwtMesto', token, {
+      res.cookie('jwtMovies', token, {
         httpOnly: true,
         sameSite: true,
         secure: process.env.NODE_ENV === 'production',
