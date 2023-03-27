@@ -106,4 +106,4 @@ module.exports.signInUser = (req, res, next) => {
     });
 };
 
-module.exports.signOut = (req, res) => res.clearCookie('jwtMesto').json({ message: 'Пользователь вышел из аккаунта' });
+module.exports.signOut = (req, res) => res.clearCookie('jwtMovies').json({ message: 'Пользователь вышел из аккаунта' });
