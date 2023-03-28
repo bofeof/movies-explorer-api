@@ -95,7 +95,7 @@ module.exports.signInUser = (req, res, next) => {
       );
 
       res.cookie('jwtMovies', token, {
-        httpOnly: true,
+        httpOnly: process.env.NODE_ENV === 'production',
         sameSite: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 3600000 * 24 * 7,
