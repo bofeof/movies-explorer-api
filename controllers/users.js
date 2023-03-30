@@ -36,9 +36,11 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       // check 11000, user already exists
       if (err.code === 11000) {
-        next(new DublicateDataError({
-          message: errorMessages.changeEmailError,
-        }));
+        next(
+          new DublicateDataError({
+            message: errorMessages.changeEmailError,
+          }),
+        );
         return;
       }
       if (err.name === 'ValidationError') {
@@ -67,9 +69,11 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       // check 11000, user already exists
       if (err.code === 11000) {
-        next(new DublicateDataError({
-          message: errorMessages.userExistsError,
-        }));
+        next(
+          new DublicateDataError({
+            message: errorMessages.userExistsError,
+          }),
+        );
         return;
       }
       if (err.name === 'ValidationError') {
@@ -89,9 +93,17 @@ module.exports.signInUser = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : developmentEnvConstants.JWT_SECRET,
         { expiresIn: '7d' },
       );
-      res.send({ token });
+
+      res.cookie('jwtMovies', token, {
+        httpOnly: process.env.NODE_ENV === 'production',
+        sameSite: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 3600000 * 24 * 7,
+      }).json({ message: 'Пользователь зашел в аккаунт' });
     })
     .catch((err) => {
       next(err);
     });
 };
+
+module.exports.signOut = (req, res) => res.clearCookie('jwtMovies').json({ message: 'Пользователь вышел из аккаунта' });
