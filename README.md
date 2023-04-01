@@ -4,24 +4,24 @@ Backend:
 
 - Node.js + Express;
 - MongoDb\Mongoose;
-- JWT;
-- Nginx;
-- pm2;
+- Cookie;
 - Celebrate;
 - Winston;
 - Letsencrypt;
-- Jest\*;
+- Nginx;
+- pm2;
+- Jest (requests testing);
 
 ## Backend part:
 
-IP prod 51.250.12.246  
-Current prod: https://api.bofeof-movies.nomoredomains.work 
+IP prod 158.160.55.250
+Current prod: https://api.bofeof-movies.nomoredomains.work/api
 or
-Local: http://localhost:3005
+Local: http://localhost:3005(default)
 
 #### API
 
-- Url: https://api.bofeof-movies.nomoredomains.work or http://localhost:3005
+- Url: https://api.bofeof-movies.nomoredomains.work/api or http://localhost:3005(default)
 - headers: {  
    "Content-Type": "application/json",  
   }
@@ -33,13 +33,12 @@ Method | Endpoint | Action | Auth required | Required body data |
 |--------|------------------|-------------------------------|----------------------------------|----------------------------------------------------------------------------------------------------|
 | POST | api/signin | Log in | | email, password |
 | POST | api/signup | Create user | | name, email, password |
-| Get | api/signout | Log out | Yes |  |
+| GET | api/signout | Log out | Yes | |
 | GET | api/users/me | Get info about current user | Yes | |
 | PATCH | api/users/me | Update user name and/or email | Yes | name, email |
 | POST | api/movies | Create movie | Yes | country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId |
 | DELETE | api/movies/:movieId | Remove movie | Yes | movie id |
 | GET | api/movies | Get user library of movies | Yes | |
-
 
 ### Settings for backend. All comands are located in package.json:
 
