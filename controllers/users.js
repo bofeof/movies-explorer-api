@@ -94,16 +94,24 @@ module.exports.signInUser = (req, res, next) => {
         { expiresIn: '7d' },
       );
 
-      res.cookie('jwtMovies', token, {
-        httpOnly: process.env.NODE_ENV === 'production',
-        sameSite: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 3600000 * 24 * 7,
-      }).json({ message: 'Пользователь зашел в аккаунт' });
+      res
+        .cookie('jwtMovies', token, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          sameSite: 'none',
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 3600000 * 24 * 7,
+        })
+        .json({ message: 'Пользователь зашел в аккаунт' });
     })
     .catch((err) => {
       next(err);
     });
 };
 
-module.exports.signOut = (req, res) => res.clearCookie('jwtMovies').json({ message: 'Пользователь вышел из аккаунта' });
+module.exports.signOut = (req, res) => res
+  .clearCookie('jwtMovies', {
+    httpOnly: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+  })
+  .json({ message: 'Пользователь вышел из аккаунта' });
